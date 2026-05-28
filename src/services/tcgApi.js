@@ -11,26 +11,24 @@ const API_BASE_URL = 'https://www.apitcg.com/api';
 export async function fetchRandomCards(tcgId, count = 5) {
   // Special case for Yu-Gi-Oh! using YGOProDeck API
   if (tcgId === 'yugioh') {
-    // We fetch a few random cards at once using the cardinfo endpoint with sort=random
-    // Note: YGOProDeck doesn't strictly support limit with random perfectly in v7 in a single call without multiple randomcard.php calls,
-    // but we can fetch multiple random cards by just calling randomcard.php multiple times if needed, 
-    // or use cardinfo.php?num=count&offset=0&sort=random (Wait, the docs say sort=random doesn't work well with pagination, but let's try calling randomcard multiple times or just a single list fetch for simplicity).
-    // Actually, YGOProDeck provides a randomcard endpoint. Let's fetch `count` times.
-    const promises = Array.from({ length: count }).map(() =>
-      fetch('https://db.ygoprodeck.com/api/v7/randomcard.php').then(res => res.json())
-    );
-    const results = await Promise.all(promises);
+    // To avoid rate limiting (status 500/429) from making 5 concurrent requests to randomcard.php,
+    // we fetch sequentially or use a small delay, OR we can fetch 5 random cards sequentially.
+    const results = [];
+    for (let i = 0; i < count; i++) {
+      const res = await fetch('https://db.ygoprodeck.com/api/v7/randomcard.php');
+      if (!res.ok) throw new Error(`YGO API failed with status ${res.status}`);
+      const data = await res.json();
+      results.push(data);
+      // tiny delay to prevent rate limit issues
+      if (i < count - 1) await new Promise(resolve => setTimeout(resolve, 200));
+    }
     
     return results.map(card => {
-      // Sometimes randomcard returns { data: [...] } instead of the direct card if we use some endpoints, but randomcard.php returns the card directly or wrapped?
-      // Our curl showed: {"data":[{"id":66719324,"name":"Rain of Mercy",...}]} for cardinfo with random sort, but randomcard.php usually returns just the object if not v7?
-      // Actually, YGOProDeck v7 returns { data: [card] } for randomcard.php too. Let's handle both.
       const cardData = card.data ? card.data[0] : card;
       
       return {
         id: cardData.id,
         name: cardData.name,
-        // YGO cards don't have a single rarity, they have sets. We'll pick the first set's rarity, or fallback to type.
         rarity: cardData.card_sets?.[0]?.set_rarity || cardData.type,
         images: {
           small: cardData.card_images?.[0]?.image_url_small,
@@ -54,8 +52,9 @@ export async function fetchRandomCards(tcgId, count = 5) {
     throw new Error('API Key is missing. Please add VITE_TCG_API_KEY to your .env file.');
   }
 
-  const randomPage = Math.floor(Math.random() * 10) + 1;
-  const url = `${API_BASE_URL}/${tcgId}/cards?page=${randomPage}&limit=50`;
+  // Use page=1 and limit=100 for all TCGs, then shuffle. 
+  // This avoids status 500/404 errors for TCGs like Dragon Ball that don't have many pages.
+  const url = `${API_BASE_URL}/${tcgId}/cards?page=1&limit=100`;
 
   const response = await fetch(url, {
     method: 'GET',

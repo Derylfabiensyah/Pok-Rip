@@ -93,10 +93,6 @@ export default function Home({ onOpenPack, onViewCollection }) {
                     <div className="absolute inset-0 bg-black/20" />
                   )}
                 </div>
-                {/* Always show the label, not just when active */}
-                <div className="p-3 text-center border-t-4 border-black bg-white" style={{ backgroundColor: tcg.color }}>
-                  <h3 className="font-black text-xl text-black uppercase tracking-wide">{tcg.name}</h3>
-                </div>
               </div>
             </motion.div>
           );

@@ -99,18 +99,18 @@ export default function App() {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
-          className="min-h-screen flex flex-col items-center justify-center gap-6 px-4"
+          className="min-h-screen flex flex-col items-center justify-center gap-6 px-4 w-full"
         >
-          <div className="glass rounded-2xl p-8 text-center max-w-md">
+          <div className="neo-card p-8 text-center max-w-md w-full bg-white">
             <div className="text-5xl mb-4">😵</div>
-            <h3 className="text-xl font-bold text-white mb-2">Oops! Something went wrong</h3>
-            <p className="text-slate-400 text-sm mb-6">{error}</p>
+            <h3 className="text-xl font-black uppercase mb-2">Oops! Something went wrong</h3>
+            <p className="text-slate-600 font-bold text-sm mb-6">{error}</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => startOpenPack(selectedTcg)}
-                className="btn-primary"
+                className="btn-primary flex-1"
                 id="btn-retry"
               >
                 🔄 Retry
@@ -119,7 +119,7 @@ export default function App() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={goHome}
-                className="btn-secondary"
+                className="btn-secondary flex-1"
               >
                 🏠 Home
               </motion.button>

@@ -59,7 +59,7 @@ export default function CardReveal({ cards, onComplete, tcgId = 'pokemon' }) {
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: -80, scale: 0.9 }}
           transition={{ duration: 0.4, ease: 'easeOut' }}
-          className="z-10"
+          className="z-10 w-full max-w-sm mx-auto"
           onAnimationComplete={() => setRevealed(true)}
         >
           <CardFlip card={currentCard} tcgId={tcgId} />

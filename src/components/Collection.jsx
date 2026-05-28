@@ -55,7 +55,16 @@ export default function Collection({ onGoHome, onOpenPack }) {
 
     // 2. Filter by TCG
     if (filterTcg !== 'all') {
-      uniqueCards = uniqueCards.filter(c => c.tcgId === filterTcg);
+      uniqueCards = uniqueCards.filter(c => {
+        // Fallback for older cards saved before tcgId was added
+        let cardTcgId = c.tcgId;
+        if (!cardTcgId) {
+          if (c.supertype || c.subtypes || c.hp) cardTcgId = 'pokemon';
+          else if (c.attribute || cardTcgId === 'yugioh') cardTcgId = 'yugioh'; // basic check
+          else cardTcgId = 'pokemon'; // Default to pokemon for old saves
+        }
+        return cardTcgId === filterTcg;
+      });
     }
 
     // 3. Filter by Rarity
