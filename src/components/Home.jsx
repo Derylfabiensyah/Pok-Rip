@@ -17,7 +17,7 @@ const TCG_OPTIONS = [
   { id: 'gundam', name: 'Gundam', image: gundamBack, color: 'var(--color-gundam)' },
 ];
 
-export default function Home({ onStart, onOpenCollection }) {
+export default function Home({ onOpenPack, onViewCollection }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const selectedTcg = TCG_OPTIONS[selectedIndex];
@@ -47,7 +47,7 @@ export default function Home({ onStart, onOpenCollection }) {
       </motion.div>
 
       {/* Carousel */}
-      <div className="relative w-full max-w-4xl h-[450px] flex items-center justify-center perspective-1000 mb-12">
+      <div className="relative w-full max-w-4xl h-[450px] flex items-center justify-center perspective-1000 mb-12 z-20">
         {TCG_OPTIONS.map((tcg, index) => {
           // Calculate relative position (-2 to +2)
           let diff = index - selectedIndex;
@@ -93,11 +93,10 @@ export default function Home({ onStart, onOpenCollection }) {
                     <div className="absolute inset-0 bg-black/20" />
                   )}
                 </div>
-                {isActive && (
-                  <div className="p-3 text-center border-t-4 border-black bg-white" style={{ backgroundColor: tcg.color }}>
-                    <h3 className="font-black text-xl text-black uppercase tracking-wide">{tcg.name}</h3>
-                  </div>
-                )}
+                {/* Always show the label, not just when active */}
+                <div className="p-3 text-center border-t-4 border-black bg-white" style={{ backgroundColor: tcg.color }}>
+                  <h3 className="font-black text-xl text-black uppercase tracking-wide">{tcg.name}</h3>
+                </div>
               </div>
             </motion.div>
           );
@@ -106,13 +105,13 @@ export default function Home({ onStart, onOpenCollection }) {
         {/* Carousel Controls */}
         <button 
           onClick={handlePrev}
-          className="absolute left-4 md:left-12 z-20 w-12 h-12 neo-card rounded-full flex items-center justify-center bg-white hover:bg-[#ffeb3b] text-2xl"
+          className="absolute left-4 md:left-12 z-30 w-12 h-12 neo-card rounded-full flex items-center justify-center bg-white hover:bg-[#ffeb3b] text-2xl"
         >
           &larr;
         </button>
         <button 
           onClick={handleNext}
-          className="absolute right-4 md:right-12 z-20 w-12 h-12 neo-card rounded-full flex items-center justify-center bg-white hover:bg-[#ffeb3b] text-2xl"
+          className="absolute right-4 md:right-12 z-30 w-12 h-12 neo-card rounded-full flex items-center justify-center bg-white hover:bg-[#ffeb3b] text-2xl"
         >
           &rarr;
         </button>
@@ -123,12 +122,12 @@ export default function Home({ onStart, onOpenCollection }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="flex flex-wrap gap-4 justify-center max-w-xl mx-auto w-full"
+        className="flex flex-wrap gap-4 justify-center max-w-xl mx-auto w-full relative z-30"
       >
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => onStart(selectedTcg.id)}
+          onClick={() => onOpenPack(selectedTcg.id)}
           className="btn-primary w-full sm:w-auto text-xl py-4 px-12"
           style={{ backgroundColor: selectedTcg.color }}
           id="btn-home-start"
@@ -138,7 +137,7 @@ export default function Home({ onStart, onOpenCollection }) {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={onOpenCollection}
+          onClick={onViewCollection}
           className="btn-secondary w-full sm:w-auto text-xl py-4 px-12"
           id="btn-home-collection"
         >
