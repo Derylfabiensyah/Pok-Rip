@@ -116,6 +116,26 @@ export default function CardFlip({ card }) {
                   HP {card.hp}
                 </span>
               )}
+              {card?.power && (
+                <span className="bg-orange-500/20 text-orange-300 px-3 py-1 rounded-full text-xs font-medium">
+                  Power {card.power}
+                </span>
+              )}
+              {card?.cost !== undefined && (
+                <span className="bg-green-500/20 text-green-300 px-3 py-1 rounded-full text-xs font-medium">
+                  Cost {card.cost}
+                </span>
+              )}
+              {card?.color && (
+                <span className="bg-pink-500/20 text-pink-300 px-3 py-1 rounded-full text-xs font-medium">
+                  {card.color}
+                </span>
+              )}
+              {card?.type && (
+                <span className="bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full text-xs font-medium">
+                  {card.type}
+                </span>
+              )}
               {card?.types?.map((type) => (
                 <span key={type} className="bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full text-xs font-medium">
                   {type}
@@ -125,9 +145,9 @@ export default function CardFlip({ card }) {
                 {card?.rarity || 'Common'}
               </span>
             </div>
-            {card?.set?.name && (
+            {(card?.set?.name || card?.set) && (
               <p className="text-slate-500 text-xs mt-2">
-                Set: {card.set.name}
+                Set: {card?.set?.name || card?.set}
               </p>
             )}
           </motion.div>

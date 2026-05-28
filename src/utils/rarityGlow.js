@@ -1,5 +1,6 @@
 /**
  * Maps rarity string to glow CSS class and level
+ * Works across multiple TCGs
  * @param {string} rarity - The card rarity from API
  * @returns {{ glowClass: string, level: number, label: string }}
  */
@@ -10,6 +11,7 @@ export function getRarityGlow(rarity) {
 
   const rarityLower = rarity.toLowerCase();
 
+  // Level 4 (Highest) - Ultra Rares, Secrets, Special Arts
   if (
     rarityLower.includes('secret') ||
     rarityLower.includes('illustration') ||
@@ -17,29 +19,46 @@ export function getRarityGlow(rarity) {
     rarityLower.includes('rainbow') ||
     rarityLower.includes('gold') ||
     rarityLower.includes('special art') ||
-    rarityLower.includes('ultra')
+    rarityLower.includes('ultra') ||
+    rarityLower === 'sec' || // One Piece / Digimon Secret Rare
+    rarityLower === 'sp' ||  // Special
+    rarityLower === 'mangas' || 
+    rarityLower === 'mythic' // Magic
   ) {
     return { glowClass: 'glow-ultra-rare', level: 4, label: rarity };
   }
 
+  // Level 3 - Super Rares, Holos
   if (
     rarityLower.includes('holo') ||
     rarityLower.includes('amazing') ||
     rarityLower.includes('v ') ||
     rarityLower === 'rare holo' ||
-    rarityLower.includes('promo')
+    rarityLower.includes('promo') ||
+    rarityLower === 'sr' || // Super Rare (OP, Digimon)
+    rarityLower === 'pr'    // Promo
   ) {
     return { glowClass: 'glow-rare-holo', level: 3, label: rarity };
   }
 
-  if (rarityLower.includes('rare')) {
+  // Level 2 - Rares
+  if (
+    rarityLower.includes('rare') || 
+    rarityLower === 'r' // Rare (OP, Digimon)
+  ) {
     return { glowClass: 'glow-rare', level: 2, label: rarity };
   }
 
-  if (rarityLower.includes('uncommon')) {
+  // Level 1 - Uncommons
+  if (
+    rarityLower.includes('uncommon') || 
+    rarityLower === 'u' // Uncommon (OP, Digimon)
+  ) {
     return { glowClass: 'glow-uncommon', level: 1, label: rarity };
   }
 
+  // Level 0 - Commons / Leaders
+  // One Piece leaders usually just "L" or "Common" "C"
   return { glowClass: 'glow-common', level: 0, label: rarity || 'Common' };
 }
 

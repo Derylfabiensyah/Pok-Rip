@@ -5,7 +5,7 @@ import BoosterPack from './components/BoosterPack';
 import CardReveal from './components/CardReveal';
 import PackResult from './components/PackResult';
 import Collection, { saveToCollection } from './components/Collection';
-import { fetchRandomCards } from './services/pokemonApi';
+import { fetchRandomCards } from './services/tcgApi';
 
 /*
   App States (screens):
@@ -22,14 +22,17 @@ export default function App() {
   const [screen, setScreen] = useState('home');
   const [cards, setCards] = useState([]);
   const [error, setError] = useState('');
+  const [selectedTcg, setSelectedTcg] = useState('pokemon');
 
   /** Fetch cards from API and transition to pack screen */
-  const startOpenPack = useCallback(async () => {
+  const startOpenPack = useCallback(async (tcgId) => {
+    const tcgToOpen = tcgId || selectedTcg;
+    setSelectedTcg(tcgToOpen);
     setScreen('loading');
     setError('');
 
     try {
-      const fetchedCards = await fetchRandomCards(5);
+      const fetchedCards = await fetchRandomCards(tcgToOpen, 5);
       setCards(fetchedCards);
       setScreen('pack');
     } catch (err) {
@@ -37,7 +40,7 @@ export default function App() {
       setError(err.message || 'Failed to fetch cards. Please try again.');
       setScreen('error');
     }
-  }, []);
+  }, [selectedTcg]);
 
   /** Pack animation done → go to card reveal */
   const handlePackOpened = useCallback(() => {
@@ -111,7 +114,7 @@ export default function App() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={startOpenPack}
+                onClick={() => startOpenPack(selectedTcg)}
                 className="btn-primary"
                 id="btn-retry"
               >
@@ -168,7 +171,7 @@ export default function App() {
           <PackResult
             cards={cards}
             onSave={handleSaveToCollection}
-            onOpenAnother={startOpenPack}
+            onOpenAnother={() => startOpenPack(selectedTcg)}
             onGoHome={goHome}
           />
         </motion.div>
@@ -183,7 +186,7 @@ export default function App() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <Collection onGoHome={goHome} onOpenPack={startOpenPack} />
+          <Collection onGoHome={goHome} onOpenPack={() => startOpenPack(selectedTcg)} />
         </motion.div>
       )}
     </AnimatePresence>
