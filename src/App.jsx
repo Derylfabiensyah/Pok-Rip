@@ -34,6 +34,7 @@ export default function App() {
     try {
       const fetchedCards = await fetchRandomCards(tcgToOpen, 5);
       setCards(fetchedCards);
+      saveToCollection(fetchedCards); // Auto-save cards immediately
       setScreen('pack');
     } catch (err) {
       console.error('Failed to fetch cards:', err);
@@ -51,12 +52,6 @@ export default function App() {
   const handleRevealComplete = useCallback(() => {
     setScreen('result');
   }, []);
-
-  /** Save current cards to localStorage collection */
-  const handleSaveToCollection = useCallback(() => {
-    saveToCollection(cards);
-    setScreen('collection');
-  }, [cards]);
 
   /** Navigation helpers */
   const goHome = useCallback(() => setScreen('home'), []);
@@ -170,7 +165,6 @@ export default function App() {
         >
           <PackResult
             cards={cards}
-            onSave={handleSaveToCollection}
             onOpenAnother={() => startOpenPack(selectedTcg)}
             onGoHome={goHome}
           />

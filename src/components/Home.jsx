@@ -6,7 +6,6 @@ const TCG_OPTIONS = [
   { id: 'one-piece', name: 'One Piece', icon: '🏴‍☠️', color: 'from-blue-400 to-blue-600' },
   { id: 'dragon-ball-fusion', name: 'Dragon Ball', icon: '🐉', color: 'from-orange-400 to-orange-600' },
   { id: 'digimon', name: 'Digimon', icon: '🦖', color: 'from-cyan-400 to-blue-500' },
-  { id: 'magic', name: 'Magic: MTG', icon: '🔮', color: 'from-purple-500 to-indigo-600' },
   { id: 'gundam', name: 'Gundam', icon: '🤖', color: 'from-slate-400 to-slate-600' },
 ];
 

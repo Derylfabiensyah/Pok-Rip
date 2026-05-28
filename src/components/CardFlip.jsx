@@ -1,13 +1,15 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getRarityGlow, getRarityColor } from '../utils/rarityGlow';
+import { getRarityGlow, getRarityColor, getCardRarity } from '../utils/rarityGlow';
 
 export default function CardFlip({ card }) {
   const [isFlipped, setIsFlipped] = useState(false);
 
+  const cardRarity = getCardRarity(card);
+
   const { glowClass, level } = useMemo(
-    () => getRarityGlow(card?.rarity),
-    [card?.rarity]
+    () => getRarityGlow(cardRarity),
+    [cardRarity]
   );
   const rarityColor = getRarityColor(level);
 
@@ -142,7 +144,7 @@ export default function CardFlip({ card }) {
                 </span>
               ))}
               <span className={`bg-purple-500/20 px-3 py-1 rounded-full text-xs font-medium ${rarityColor}`}>
-                {card?.rarity || 'Common'}
+                {cardRarity}
               </span>
             </div>
             {(card?.set?.name || card?.set) && (

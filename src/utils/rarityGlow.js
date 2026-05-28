@@ -1,4 +1,18 @@
 /**
+ * Helper to get card rarity from standard rarity or infer from Digimon level
+ */
+export function getCardRarity(card) {
+  if (card?.rarity) return card.rarity;
+  if (card?.level) {
+    if (card.level === 'Lv.7' || card.level === 'Lv.6') return 'Secret Rare';
+    if (card.level === 'Lv.5') return 'Super Rare';
+    if (card.level === 'Lv.4') return 'Rare';
+    return 'Uncommon';
+  }
+  return 'Common';
+}
+
+/**
  * Maps rarity string to glow CSS class and level
  * Works across multiple TCGs
  * @param {string} rarity - The card rarity from API

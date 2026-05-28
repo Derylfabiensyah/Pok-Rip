@@ -1,14 +1,14 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { getRarityGlow, getRarityColor } from '../utils/rarityGlow';
+import { getRarityGlow, getRarityColor, getCardRarity } from '../utils/rarityGlow';
 
-export default function PackResult({ cards, onSave, onOpenAnother, onGoHome }) {
+export default function PackResult({ cards, onOpenAnother, onGoHome }) {
   // Find the most rare card
   const mostRare = useMemo(() => {
     let best = cards[0];
     let bestLevel = 0;
     cards.forEach((card) => {
-      const { level } = getRarityGlow(card?.rarity);
+      const { level } = getRarityGlow(getCardRarity(card));
       if (level > bestLevel) {
         bestLevel = level;
         best = card;
@@ -39,7 +39,8 @@ export default function PackResult({ cards, onSave, onOpenAnother, onGoHome }) {
       {/* Cards Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6 max-w-5xl w-full z-10 mb-10">
         {cards.map((card, i) => {
-          const { glowClass, level } = getRarityGlow(card?.rarity);
+          const cardRarity = getCardRarity(card);
+          const { glowClass, level } = getRarityGlow(cardRarity);
           const rarityColor = getRarityColor(level);
           const isBest = card.id === mostRare?.id && level >= 2;
 
@@ -81,7 +82,7 @@ export default function PackResult({ cards, onSave, onOpenAnother, onGoHome }) {
               {/* Card Info */}
               <div className="mt-2 text-center">
                 <p className="text-sm font-semibold text-white truncate">{card.name}</p>
-                <p className={`text-xs ${rarityColor}`}>{card.rarity || 'Common'}</p>
+                <p className={`text-xs ${rarityColor}`}>{cardRarity}</p>
               </div>
             </motion.div>
           );
@@ -95,15 +96,7 @@ export default function PackResult({ cards, onSave, onOpenAnother, onGoHome }) {
         transition={{ delay: 0.8, duration: 0.5 }}
         className="flex flex-col sm:flex-row gap-3 z-10"
       >
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onSave}
-          className="btn-primary"
-          id="btn-save-collection"
-        >
-          💾 Save to Collection
-        </motion.button>
+
 
         <motion.button
           whileHover={{ scale: 1.03 }}

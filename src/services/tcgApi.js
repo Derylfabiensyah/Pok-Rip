@@ -1,6 +1,6 @@
 import { shuffleCards } from '../utils/shuffleCards';
 
-const API_BASE_URL = 'https://apitcg.com/api';
+const API_BASE_URL = 'https://www.apitcg.com/api';
 
 /**
  * Fetch random cards for a specific TCG

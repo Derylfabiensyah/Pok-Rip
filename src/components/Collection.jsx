@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getRarityGlow, getRarityColor } from '../utils/rarityGlow';
+import { getRarityGlow, getRarityColor, getCardRarity } from '../utils/rarityGlow';
 
 const STORAGE_KEY = 'pokerip_collection';
 
@@ -102,7 +102,8 @@ export default function Collection({ onGoHome, onOpenPack }) {
         >
           <AnimatePresence>
             {cards.map((card, i) => {
-              const { glowClass, level } = getRarityGlow(card?.rarity);
+              const cardRarity = getCardRarity(card);
+            const { glowClass, level } = getRarityGlow(cardRarity);
               const rarityColor = getRarityColor(level);
 
               return (
@@ -129,7 +130,7 @@ export default function Collection({ onGoHome, onOpenPack }) {
                   </div>
                   <div className="mt-2 text-center">
                     <p className="text-xs font-semibold text-white truncate">{card.name}</p>
-                    <p className={`text-xs ${rarityColor}`}>{card.rarity || 'Common'}</p>
+                    <p className={`text-xs ${rarityColor}`}>{cardRarity}</p>
                   </div>
                 </motion.div>
               );
