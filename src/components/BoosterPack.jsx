@@ -1,8 +1,25 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function BoosterPack({ onPackOpen }) {
+import pokemonBack from '../assets/pokemon.png';
+import onepieceBack from '../assets/onepiece.png';
+import dragonballBack from '../assets/dragonball.webp';
+import digimonBack from '../assets/digimon.png';
+import gundamBack from '../assets/gundam.png';
+import yugiohBack from '../assets/yugioh.jpg';
+
+const TCG_DATA = {
+  'pokemon': { name: 'Pokémon', image: pokemonBack, color: 'var(--color-pokemon)' },
+  'one-piece': { name: 'One Piece', image: onepieceBack, color: 'var(--color-onepiece)' },
+  'yugioh': { name: 'Yu-Gi-Oh!', image: yugiohBack, color: 'var(--color-yugioh)' },
+  'dragon-ball-fusion-world': { name: 'Dragon Ball', image: dragonballBack, color: 'var(--color-dragonball)' },
+  'digimon': { name: 'Digimon', image: digimonBack, color: 'var(--color-digimon)' },
+  'gundam': { name: 'Gundam', image: gundamBack, color: 'var(--color-gundam)' },
+};
+
+export default function BoosterPack({ tcgId = 'pokemon', onPackOpen }) {
   const [phase, setPhase] = useState('idle'); // idle, shaking, glowing, opened
+  const tcgInfo = TCG_DATA[tcgId] || TCG_DATA['pokemon'];
 
   const handleClick = () => {
     if (phase !== 'idle') return;
@@ -23,26 +40,23 @@ export default function BoosterPack({ onPackOpen }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/3 left-1/3 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 right-1/3 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl" />
-      </div>
-
-      <motion.p
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden bg-[var(--color-bg-primary)]">
+      
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-slate-400 text-lg mb-8 tracking-wide z-10"
+        className="text-center mb-8 z-10"
       >
-        {phase === 'idle' && 'Tap the pack to rip it open!'}
-        {phase === 'shaking' && 'Something is inside...'}
-        {phase === 'glowing' && '✨ Here it comes!'}
-        {phase === 'opened' && 'Pack opened!'}
-      </motion.p>
+        <h2 className="text-3xl font-black uppercase" style={{ textShadow: '2px 2px 0 var(--color-border)' }}>
+          {phase === 'idle' && 'Rip the Pack!'}
+          {phase === 'shaking' && 'Opening...'}
+          {phase === 'glowing' && 'BOOM!'}
+          {phase === 'opened' && 'Done!'}
+        </h2>
+      </motion.div>
 
       {/* Booster Pack */}
-      <div className="relative z-10">
+      <div className="relative z-10 perspective-1000">
         {/* Glow light from inside */}
         <AnimatePresence>
           {phase === 'glowing' && (
@@ -51,42 +65,17 @@ export default function BoosterPack({ onPackOpen }) {
               animate={{ opacity: 1, scale: 1.5 }}
               exit={{ opacity: 0, scale: 2 }}
               transition={{ duration: 0.8 }}
-              className="absolute inset-0 bg-gradient-to-t from-purple-500/40 via-cyan-400/30 to-yellow-300/20 rounded-3xl blur-2xl -z-10"
+              className="absolute inset-0 bg-white rounded-3xl -z-10"
+              style={{ boxShadow: `0 0 100px 50px ${tcgInfo.color}` }}
             />
-          )}
-        </AnimatePresence>
-
-        {/* Sparkle particles */}
-        <AnimatePresence>
-          {(phase === 'glowing' || phase === 'opened') && (
-            <>
-              {[...Array(12)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                  animate={{
-                    opacity: [0, 1, 0],
-                    scale: [0, 1, 0],
-                    x: (Math.random() - 0.5) * 300,
-                    y: (Math.random() - 0.5) * 300,
-                  }}
-                  transition={{ duration: 0.8 + Math.random() * 0.4, delay: Math.random() * 0.3 }}
-                  className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full pointer-events-none"
-                  style={{
-                    background: ['#fbbf24', '#00d4ff', '#a855f7', '#ffffff'][Math.floor(Math.random() * 4)],
-                    boxShadow: `0 0 6px 2px ${['#fbbf24', '#00d4ff', '#a855f7', '#ffffff'][Math.floor(Math.random() * 4)]}`,
-                  }}
-                />
-              ))}
-            </>
           )}
         </AnimatePresence>
 
         <motion.div
           onClick={handleClick}
           className={`cursor-pointer select-none relative ${phase === 'shaking' ? 'animate-shake' : ''}`}
-          whileHover={phase === 'idle' ? { scale: 1.03, rotate: 1 } : {}}
-          whileTap={phase === 'idle' ? { scale: 0.97 } : {}}
+          whileHover={phase === 'idle' ? { scale: 1.05, rotate: 2 } : {}}
+          whileTap={phase === 'idle' ? { scale: 0.95 } : {}}
           animate={
             phase === 'opened'
               ? { scale: 0, rotate: 15, opacity: 0 }
@@ -94,39 +83,37 @@ export default function BoosterPack({ onPackOpen }) {
           }
           transition={{ duration: 0.5 }}
         >
-          {/* Pack visual */}
-          <div className="w-56 h-80 md:w-64 md:h-96 rounded-2xl overflow-hidden relative group">
-            {/* Pack background gradient */}
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-800 via-indigo-900 to-blue-900" />
-
-            {/* Pack design elements */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
-              {/* Top decorative line */}
-              <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent mb-4" />
-
-              {/* Pokeball pattern */}
-              <div className="w-24 h-24 relative mb-4">
-                <div className="absolute inset-0 rounded-full border-2 border-yellow-400/30 overflow-hidden">
-                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-red-500/20" />
-                  <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-white/10" />
-                  <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-yellow-400/40 -translate-y-1/2" />
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-yellow-400/40 bg-transparent" />
-                </div>
-              </div>
-
-              {/* Pack text */}
-              <p className="text-yellow-300/80 font-bold text-xl tracking-wider mb-1">POKÉMON</p>
-              <p className="text-yellow-400/60 text-xs tracking-[0.3em] uppercase">Booster Pack</p>
-
-              {/* Bottom decorative line */}
-              <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-yellow-400/50 to-transparent mt-4" />
-
-              {/* Tear line */}
-              <div className="absolute top-8 left-0 right-0 border-t border-dashed border-white/10" />
+          {/* Pack visual - Neubrutalism style */}
+          <div className="w-64 h-96 neo-card overflow-hidden relative flex flex-col group" style={{ backgroundColor: tcgInfo.color }}>
+            
+            {/* Top crimp */}
+            <div className="h-6 w-full border-b-4 border-black flex items-center justify-center bg-white overflow-hidden">
+               {/* Zig zag pattern for crimp using repeating linear gradient */}
+               <div className="w-full h-full" style={{
+                 backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px)'
+               }}></div>
             </div>
 
-            {/* Holographic shimmer overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Pack content */}
+            <div className="flex-1 flex flex-col items-center justify-center p-4 relative">
+              <div className="w-32 h-44 neo-card bg-white mb-6 p-2 rotate-[-5deg] group-hover:rotate-0 transition-transform">
+                <img src={tcgInfo.image} alt="Card Back" className="w-full h-full object-cover rounded" />
+              </div>
+
+              <div className="bg-white border-4 border-black px-4 py-2 transform rotate-2">
+                <h3 className="font-black text-2xl uppercase tracking-tighter text-center">{tcgInfo.name}</h3>
+              </div>
+              <div className="neo-badge mt-4 bg-black text-white px-3 py-1 text-sm uppercase font-bold transform -rotate-3">
+                Booster Pack
+              </div>
+            </div>
+
+            {/* Bottom crimp */}
+            <div className="h-6 w-full border-t-4 border-black flex items-center justify-center bg-white overflow-hidden">
+               <div className="w-full h-full" style={{
+                 backgroundImage: 'repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(0,0,0,0.1) 10px, rgba(0,0,0,0.1) 20px)'
+               }}></div>
+            </div>
           </div>
         </motion.div>
       </div>

@@ -1,120 +1,150 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
+import pokemonBack from '../assets/pokemon.png';
+import onepieceBack from '../assets/onepiece.png';
+import dragonballBack from '../assets/dragonball.webp';
+import digimonBack from '../assets/digimon.png';
+import gundamBack from '../assets/gundam.png';
+import yugiohBack from '../assets/yugioh.jpg';
+
 const TCG_OPTIONS = [
-  { id: 'pokemon', name: 'Pokémon', icon: '⚡', color: 'from-yellow-400 to-red-500' },
-  { id: 'one-piece', name: 'One Piece', icon: '🏴‍☠️', color: 'from-blue-400 to-blue-600' },
-  { id: 'dragon-ball-fusion', name: 'Dragon Ball', icon: '🐉', color: 'from-orange-400 to-orange-600' },
-  { id: 'digimon', name: 'Digimon', icon: '🦖', color: 'from-cyan-400 to-blue-500' },
-  { id: 'gundam', name: 'Gundam', icon: '🤖', color: 'from-slate-400 to-slate-600' },
+  { id: 'pokemon', name: 'Pokémon', image: pokemonBack, color: 'var(--color-pokemon)' },
+  { id: 'one-piece', name: 'One Piece', image: onepieceBack, color: 'var(--color-onepiece)' },
+  { id: 'yugioh', name: 'Yu-Gi-Oh!', image: yugiohBack, color: 'var(--color-yugioh)' },
+  { id: 'dragon-ball-fusion-world', name: 'Dragon Ball', image: dragonballBack, color: 'var(--color-dragonball)' },
+  { id: 'digimon', name: 'Digimon', image: digimonBack, color: 'var(--color-digimon)' },
+  { id: 'gundam', name: 'Gundam', image: gundamBack, color: 'var(--color-gundam)' },
 ];
 
-export default function Home({ onOpenPack, onViewCollection }) {
-  const [selectedTcg, setSelectedTcg] = useState('pokemon');
+export default function Home({ onStart, onOpenCollection }) {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const selectedTcg = TCG_OPTIONS[selectedIndex];
+
+  const handleNext = () => {
+    setSelectedIndex((prev) => (prev + 1) % TCG_OPTIONS.length);
+  };
+
+  const handlePrev = () => {
+    setSelectedIndex((prev) => (prev - 1 + TCG_OPTIONS.length) % TCG_OPTIONS.length);
+  };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 relative overflow-hidden py-12">
-      {/* Background decorative orbs */}
-      <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/8 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
-
-      {/* Logo / Title */}
+    <div className="min-h-screen flex flex-col pt-12 pb-8 px-4 relative z-10 items-center justify-center">
+      {/* Header */}
       <motion.div
-        initial={{ opacity: 0, y: -40 }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: 'easeOut' }}
-        className="text-center z-10 w-full max-w-4xl"
+        className="text-center mb-12"
       >
-        <h1 className="text-6xl md:text-8xl font-black gradient-text mb-4 tracking-tight">
-          TCGRip
+        <h1 className="text-5xl md:text-7xl font-black mb-4 uppercase tracking-tighter" style={{ textShadow: '4px 4px 0 var(--color-border)' }}>
+          Poké<span className="text-[#ff4081]">Rip</span>
         </h1>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="text-lg md:text-xl text-slate-400 mb-12 font-light tracking-wide"
-        >
-          Open booster packs from your favorite games
-        </motion.p>
-      </motion.div>
-
-      {/* TCG Selector */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.6, duration: 0.5 }}
-        className="z-10 w-full max-w-2xl mb-12"
-      >
-        <p className="text-center text-slate-300 mb-4 text-sm uppercase tracking-widest font-semibold">
-          Select Trading Card Game
+        <p className="text-xl md:text-2xl font-bold border-b-4 border-black inline-block pb-1">
+          Select Your TCG
         </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {TCG_OPTIONS.map((tcg) => (
-            <motion.button
-              key={tcg.id}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setSelectedTcg(tcg.id)}
-              className={`relative overflow-hidden rounded-xl p-4 border transition-all duration-300 flex flex-col items-center justify-center gap-2 ${
-                selectedTcg === tcg.id
-                  ? 'border-purple-400 bg-purple-500/20 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
-                  : 'border-slate-700 bg-slate-800/50 hover:bg-slate-700/50 hover:border-slate-500'
-              }`}
-            >
-              <div className="text-3xl">{tcg.icon}</div>
-              <span className={`font-semibold text-sm ${
-                selectedTcg === tcg.id ? 'text-white' : 'text-slate-400'
-              }`}>
-                {tcg.name}
-              </span>
-              
-              {/* Active glow gradient */}
-              {selectedTcg === tcg.id && (
-                <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${tcg.color}`} />
-              )}
-            </motion.button>
-          ))}
-        </div>
       </motion.div>
 
-      {/* Buttons */}
+      {/* Carousel */}
+      <div className="relative w-full max-w-4xl h-[450px] flex items-center justify-center perspective-1000 mb-12">
+        {TCG_OPTIONS.map((tcg, index) => {
+          // Calculate relative position (-2 to +2)
+          let diff = index - selectedIndex;
+          if (diff < -2) diff += TCG_OPTIONS.length;
+          if (diff > 2) diff -= TCG_OPTIONS.length;
+
+          // If it's too far, hide it
+          if (Math.abs(diff) > 2) return null;
+
+          const isActive = diff === 0;
+          
+          return (
+            <motion.div
+              key={tcg.id}
+              className="absolute cursor-pointer"
+              onClick={() => setSelectedIndex(index)}
+              animate={{
+                x: diff * 120, // Spread them out horizontally
+                y: Math.abs(diff) * 20, // Push side cards down slightly
+                scale: isActive ? 1.1 : Math.max(0.7, 1 - Math.abs(diff) * 0.15),
+                rotateY: -diff * 15,
+                rotateZ: diff * 3,
+                zIndex: 10 - Math.abs(diff),
+                opacity: 1 - Math.abs(diff) * 0.2
+              }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              style={{
+                width: isActive ? '240px' : '200px',
+                height: isActive ? '336px' : '280px',
+              }}
+            >
+              <div 
+                className={`w-full h-full neo-card overflow-hidden flex flex-col transition-all duration-300 ${isActive ? 'ring-4 ring-offset-4 ring-black' : ''}`}
+                style={{ borderColor: isActive ? tcg.color : 'var(--color-border)' }}
+              >
+                <div className="flex-1 w-full relative bg-black/5">
+                  <img 
+                    src={tcg.image} 
+                    alt={tcg.name} 
+                    className="w-full h-full object-cover"
+                  />
+                  {!isActive && (
+                    <div className="absolute inset-0 bg-black/20" />
+                  )}
+                </div>
+                {isActive && (
+                  <div className="p-3 text-center border-t-4 border-black bg-white" style={{ backgroundColor: tcg.color }}>
+                    <h3 className="font-black text-xl text-black uppercase tracking-wide">{tcg.name}</h3>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+          );
+        })}
+
+        {/* Carousel Controls */}
+        <button 
+          onClick={handlePrev}
+          className="absolute left-4 md:left-12 z-20 w-12 h-12 neo-card rounded-full flex items-center justify-center bg-white hover:bg-[#ffeb3b] text-2xl"
+        >
+          &larr;
+        </button>
+        <button 
+          onClick={handleNext}
+          className="absolute right-4 md:right-12 z-20 w-12 h-12 neo-card rounded-full flex items-center justify-center bg-white hover:bg-[#ffeb3b] text-2xl"
+        >
+          &rarr;
+        </button>
+      </div>
+
+      {/* Action Buttons */}
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7, duration: 0.6 }}
-        className="flex flex-col sm:flex-row gap-4 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="flex flex-wrap gap-4 justify-center max-w-xl mx-auto w-full"
       >
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => onOpenPack(selectedTcg)}
-          className="btn-primary text-lg px-10 py-4"
-          id="btn-open-pack"
+          onClick={() => onStart(selectedTcg.id)}
+          className="btn-primary w-full sm:w-auto text-xl py-4 px-12"
+          style={{ backgroundColor: selectedTcg.color }}
+          id="btn-home-start"
         >
-          ⚡ Open Pack
+          Rip Pack!
         </motion.button>
-
         <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={onViewCollection}
-          className="btn-secondary text-lg px-10 py-4"
-          id="btn-view-collection"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onOpenCollection}
+          className="btn-secondary w-full sm:w-auto text-xl py-4 px-12"
+          id="btn-home-collection"
         >
-          📦 View Collection
+          Collection
         </motion.button>
       </motion.div>
-
-      {/* Decorative bottom text */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.2, duration: 0.8 }}
-        className="absolute bottom-6 text-xs text-slate-600 tracking-widest uppercase"
-      >
-        Powered by API TCG
-      </motion.p>
     </div>
   );
 }

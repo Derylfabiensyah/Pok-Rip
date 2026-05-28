@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CardFlip from './CardFlip';
 
-export default function CardReveal({ cards, onComplete }) {
+export default function CardReveal({ cards, onComplete, tcgId = 'pokemon' }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [revealed, setRevealed] = useState(false);
 
@@ -62,7 +62,7 @@ export default function CardReveal({ cards, onComplete }) {
           className="z-10"
           onAnimationComplete={() => setRevealed(true)}
         >
-          <CardFlip card={currentCard} />
+          <CardFlip card={currentCard} tcgId={tcgId} />
         </motion.div>
       </AnimatePresence>
 

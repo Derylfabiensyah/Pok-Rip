@@ -1,119 +1,94 @@
-import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { getRarityGlow, getRarityColor, getCardRarity } from '../utils/rarityGlow';
+import { getCardRarity, getRarityGlow, getRarityColor } from '../utils/rarityGlow';
 
 export default function PackResult({ cards, onOpenAnother, onGoHome }) {
-  // Find the most rare card
-  const mostRare = useMemo(() => {
-    let best = cards[0];
-    let bestLevel = 0;
-    cards.forEach((card) => {
-      const { level } = getRarityGlow(getCardRarity(card));
-      if (level > bestLevel) {
-        bestLevel = level;
-        best = card;
-      }
-    });
-    return best;
-  }, [cards]);
+  // Find highest rarity card for the summary
+  const sortedCards = [...cards].sort((a, b) => {
+    const levelA = getRarityGlow(getCardRarity(a)).level;
+    const levelB = getRarityGlow(getCardRarity(b)).level;
+    return levelB - levelA;
+  });
+  const bestCard = sortedCards[0];
+  const bestRarity = getCardRarity(bestCard);
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-10 relative">
-      {/* Background */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-600/8 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-1/4 w-80 h-80 bg-cyan-500/6 rounded-full blur-3xl" />
-      </div>
-
-      {/* Header */}
+    <div className="min-h-screen flex flex-col items-center py-12 px-4 relative z-10 bg-[var(--color-bg-primary)]">
       <motion.div
-        initial={{ opacity: 0, y: -30 }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-10 z-10"
+        className="text-center mb-10"
       >
-        <h2 className="text-4xl md:text-5xl font-black gradient-text mb-3">Pack Opened!</h2>
-        <p className="text-slate-400 text-lg">Here's what you got</p>
+        <h2 className="text-4xl md:text-5xl font-black uppercase mb-2" style={{ textShadow: '2px 2px 0 var(--color-border)' }}>
+          Pack Summary
+        </h2>
+        <p className="text-lg font-bold border-b-2 border-black inline-block pb-1">
+          Here's what you got
+        </p>
       </motion.div>
 
-      {/* Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 md:gap-6 max-w-5xl w-full z-10 mb-10">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2 }}
+        className="flex flex-wrap justify-center gap-4 md:gap-6 mb-12 max-w-6xl w-full"
+      >
         {cards.map((card, i) => {
-          const cardRarity = getCardRarity(card);
-          const { glowClass, level } = getRarityGlow(cardRarity);
-          const rarityColor = getRarityColor(level);
-          const isBest = card.id === mostRare?.id && level >= 2;
+          const rarity = getCardRarity(card);
+          const { glowClass } = getRarityGlow(rarity);
+          const isBest = card.id === bestCard.id;
 
           return (
             <motion.div
-              key={card.id}
-              initial={{ opacity: 0, y: 40, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ delay: i * 0.1, duration: 0.5, ease: 'easeOut' }}
-              className={`relative group ${isBest ? 'col-span-2 sm:col-span-1' : ''}`}
+              key={`${card.id}-${i}`}
+              whileHover={{ y: -5, scale: 1.02 }}
+              className="relative w-32 md:w-40 flex flex-col items-center"
             >
-              {/* Best card highlight badge */}
               {isBest && (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.6, type: 'spring' }}
-                  className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-yellow-500 to-amber-500 text-black text-xs font-bold px-3 py-1 rounded-full z-20 whitespace-nowrap"
-                >
+                <div className="absolute -top-3 -right-3 z-10 neo-badge bg-[#ffeb3b] text-black transform rotate-6 border border-black text-xs px-2 shadow-[2px_2px_0_#000]">
                   ⭐ Best Pull!
-                </motion.div>
+                </div>
               )}
-
-              <div className={`rounded-xl overflow-hidden ${glowClass} transition-transform duration-300 group-hover:scale-105`}>
+              <div className={`w-full aspect-[2.5/3.5] bg-white rounded-xl overflow-hidden mb-3 ${glowClass}`}>
                 {card?.images?.small ? (
                   <img
                     src={card.images.small}
                     alt={card.name}
-                    className="w-full h-auto"
+                    className="w-full h-full object-cover"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="w-full aspect-[2.5/3.5] bg-gray-800 flex items-center justify-center">
-                    <p className="text-slate-500 text-sm">{card.name}</p>
+                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                    <p className="text-xs font-bold p-2 text-center">{card.name}</p>
                   </div>
                 )}
               </div>
-
-              {/* Card Info */}
-              <div className="mt-2 text-center">
-                <p className="text-sm font-semibold text-white truncate">{card.name}</p>
-                <p className={`text-xs ${rarityColor}`}>{cardRarity}</p>
-              </div>
+              <p className="font-bold text-sm truncate w-full text-center">{card.name}</p>
+              <p className="text-xs neo-badge mt-1 bg-black text-white">{rarity}</p>
             </motion.div>
           );
         })}
-      </div>
+      </motion.div>
 
-      {/* Action Buttons */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-        className="flex flex-col sm:flex-row gap-3 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+        className="flex flex-col sm:flex-row gap-4"
       >
-
-
         <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={onOpenAnother}
-          className="btn-secondary"
-          id="btn-open-another"
+          className="btn-primary"
         >
           🔄 Open Another Pack
         </motion.button>
-
+        
         <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
           onClick={onGoHome}
           className="btn-secondary"
-          id="btn-back-home"
         >
           🏠 Back Home
         </motion.button>

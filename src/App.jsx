@@ -137,7 +137,7 @@ export default function App() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <BoosterPack onPackOpen={handlePackOpened} />
+          <BoosterPack tcgId={selectedTcg} onPackOpen={handlePackOpened} />
         </motion.div>
       )}
 
@@ -150,7 +150,7 @@ export default function App() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4 }}
         >
-          <CardReveal cards={cards} onComplete={handleRevealComplete} />
+          <CardReveal cards={cards} tcgId={selectedTcg} onComplete={handleRevealComplete} />
         </motion.div>
       )}
 

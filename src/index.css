@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
-/* ===== Custom Theme Variables ===== */
+/* ===== Neubrutalism Theme Variables ===== */
 :root {
-  --color-bg-primary: #0a0a0f;
-  --color-bg-secondary: #12121a;
-  --color-bg-card: #1a1a2e;
-  --color-purple-dark: #2d1b69;
-  --color-purple-mid: #6c3ce0;
-  --color-purple-light: #a855f7;
-  --color-blue-neon: #00d4ff;
-  --color-blue-glow: #3b82f6;
-  --color-gold: #fbbf24;
-  --color-gold-glow: #f59e0b;
-  --color-text-primary: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
+  --color-bg-primary: #f0f0f0;
+  --color-text-primary: #111111;
+  --color-text-secondary: #333333;
+  --color-border: #111111;
+  
+  /* TCG Colors */
+  --color-pokemon: #ffde00;
+  --color-onepiece: #ff3333;
+  --color-dragonball: #ff8c00;
+  --color-digimon: #00d4ff;
+  --color-gundam: #cccccc;
+  --color-yugioh: #8c52ff;
+  
+  --shadow-offset: 6px;
 }
 
 /* ===== Base Styles ===== */
@@ -30,10 +31,9 @@ body {
   color: var(--color-text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(ellipse at 20% 50%, rgba(109, 60, 224, 0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(0, 212, 255, 0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(251, 191, 36, 0.04) 0%, transparent 50%);
+  /* Fun dot grid background */
+  background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 #root {
@@ -42,17 +42,19 @@ body {
 
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 12px;
+  border-left: 3px solid var(--color-border);
 }
 ::-webkit-scrollbar-track {
   background: var(--color-bg-primary);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-purple-dark);
-  border-radius: 3px;
+  background: #ff4081;
+  border: 3px solid var(--color-border);
+  border-right: none;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-purple-mid);
+  background: #f50057;
 }
 
 /* ===== Card Flip 3D ===== */
@@ -72,160 +74,141 @@ body {
   transform: rotateY(180deg);
 }
 
-/* ===== Glow Effects ===== */
-.glow-common {
-  box-shadow: 0 0 10px rgba(148, 163, 184, 0.15);
+/* ===== Neubrutalism UI Elements ===== */
+.neo-card {
+  background-color: white;
+  border: 4px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--color-border);
+  transition: all 0.2s ease;
 }
 
-.glow-uncommon {
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.25), 0 0 30px rgba(0, 212, 255, 0.1);
-}
-
-.glow-rare {
-  box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), 0 0 40px rgba(59, 130, 246, 0.15);
-  animation: pulseBlue 2s ease-in-out infinite;
-}
-
-.glow-rare-holo {
-  box-shadow: 0 0 25px rgba(168, 85, 247, 0.5), 0 0 50px rgba(168, 85, 247, 0.2);
-  animation: pulsePurple 2s ease-in-out infinite;
-}
-
-.glow-ultra-rare {
-  box-shadow: 0 0 30px rgba(251, 191, 36, 0.6), 0 0 60px rgba(245, 158, 11, 0.3), 0 0 90px rgba(251, 191, 36, 0.15);
-  animation: pulseGold 1.5s ease-in-out infinite;
-}
-
-/* ===== Glow Animations ===== */
-@keyframes pulseBlue {
-  0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4), 0 0 40px rgba(59, 130, 246, 0.15); }
-  50% { box-shadow: 0 0 30px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.25); }
-}
-
-@keyframes pulsePurple {
-  0%, 100% { box-shadow: 0 0 25px rgba(168, 85, 247, 0.5), 0 0 50px rgba(168, 85, 247, 0.2); }
-  50% { box-shadow: 0 0 40px rgba(168, 85, 247, 0.7), 0 0 70px rgba(168, 85, 247, 0.35); }
-}
-
-@keyframes pulseGold {
-  0%, 100% { box-shadow: 0 0 30px rgba(251, 191, 36, 0.6), 0 0 60px rgba(245, 158, 11, 0.3); }
-  50% { box-shadow: 0 0 50px rgba(251, 191, 36, 0.8), 0 0 90px rgba(245, 158, 11, 0.5); }
-}
-
-/* ===== Pack Shake Animation ===== */
-@keyframes shake {
-  0%, 100% { transform: translateX(0) rotate(0deg); }
-  10% { transform: translateX(-8px) rotate(-2deg); }
-  20% { transform: translateX(8px) rotate(2deg); }
-  30% { transform: translateX(-6px) rotate(-1.5deg); }
-  40% { transform: translateX(6px) rotate(1.5deg); }
-  50% { transform: translateX(-4px) rotate(-1deg); }
-  60% { transform: translateX(4px) rotate(1deg); }
-  70% { transform: translateX(-2px) rotate(-0.5deg); }
-  80% { transform: translateX(2px) rotate(0.5deg); }
-  90% { transform: translateX(-1px) rotate(0deg); }
-}
-
-.animate-shake {
-  animation: shake 0.6s ease-in-out;
-}
-
-/* ===== Pack Glow From Inside ===== */
-@keyframes packGlow {
-  0% { opacity: 0; transform: scale(0.8); }
-  50% { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 0; transform: scale(1.5); }
-}
-
-.animate-pack-glow {
-  animation: packGlow 0.8s ease-out forwards;
-}
-
-/* ===== Sparkle Particle ===== */
-@keyframes sparkle {
-  0% { opacity: 0; transform: translate(0, 0) scale(0); }
-  50% { opacity: 1; transform: scale(1); }
-  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
-}
-
-.sparkle-particle {
-  animation: sparkle 0.8s ease-out forwards;
-}
-
-/* ===== Loading Spinner ===== */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.animate-spin-slow {
-  animation: spin 1.5s linear infinite;
-}
-
-/* ===== Floating animation ===== */
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-/* ===== Gradient text ===== */
-.gradient-text {
-  background: linear-gradient(135deg, var(--color-blue-neon), var(--color-purple-light), var(--color-gold));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ===== Glass effect ===== */
-.glass {
-  background: rgba(26, 26, 46, 0.6);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(108, 60, 224, 0.15);
+.neo-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 var(--color-border);
 }
 
 /* ===== Button styles ===== */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-purple-mid), var(--color-blue-neon));
-  color: white;
+  background-color: #76ff03;
+  color: var(--color-text-primary);
   padding: 14px 36px;
-  border-radius: 16px;
-  font-weight: 700;
+  border-radius: 8px;
+  font-weight: 800;
   font-size: 1.1rem;
-  border: none;
+  border: 4px solid var(--color-border);
+  box-shadow: 4px 4px 0 var(--color-border);
   cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
+  transition: all 0.1s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(108, 60, 224, 0.4);
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-border);
 }
 
 .btn-primary:active {
-  transform: translateY(0);
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0 var(--color-border);
 }
 
 .btn-secondary {
-  background: transparent;
+  background-color: white;
   color: var(--color-text-primary);
-  padding: 12px 28px;
-  border-radius: 14px;
-  font-weight: 600;
-  font-size: 1rem;
-  border: 1.5px solid rgba(108, 60, 224, 0.4);
+  padding: 14px 36px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 1.1rem;
+  border: 4px solid var(--color-border);
+  box-shadow: 4px 4px 0 var(--color-border);
   cursor: pointer;
-  transition: all 0.3s ease;
-  letter-spacing: 0.3px;
+  transition: all 0.1s ease;
+  text-transform: uppercase;
 }
 
 .btn-secondary:hover {
-  border-color: var(--color-purple-mid);
-  background: rgba(108, 60, 224, 0.1);
-  transform: translateY(-1px);
+  background-color: #ffeb3b;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--color-border);
+}
+
+.btn-secondary:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0 var(--color-border);
+}
+
+/* ===== Rarity Borders (Replaces Glow) ===== */
+/* In neubrutalism, we use thick colored borders and bright backgrounds instead of soft glows */
+.rarity-common {
+  border: 4px solid var(--color-border);
+  box-shadow: 6px 6px 0 var(--color-border);
+}
+
+.rarity-uncommon {
+  border: 4px solid #00d4ff;
+  box-shadow: 6px 6px 0 var(--color-border);
+}
+
+.rarity-rare {
+  border: 4px solid #3b82f6;
+  box-shadow: 8px 8px 0 var(--color-border);
+}
+
+.rarity-rare-holo {
+  border: 5px solid #a855f7;
+  box-shadow: 8px 8px 0 var(--color-border);
+}
+
+.rarity-ultra-rare {
+  border: 6px solid #fbbf24;
+  box-shadow: 10px 10px 0 var(--color-border);
+}
+
+/* ===== Animations ===== */
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  10% { transform: translateX(-8px) rotate(-4deg); }
+  20% { transform: translateX(8px) rotate(4deg); }
+  30% { transform: translateX(-6px) rotate(-3deg); }
+  40% { transform: translateX(6px) rotate(3deg); }
+  50% { transform: translateX(-4px) rotate(-2deg); }
+  60% { transform: translateX(4px) rotate(2deg); }
+  70% { transform: translateX(-2px) rotate(-1deg); }
+  80% { transform: translateX(2px) rotate(1deg); }
+  90% { transform: translateX(-1px) rotate(0deg); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* Pack Opening Flash */
+@keyframes packGlow {
+  0% { opacity: 0; background-color: #fbbf24; }
+  50% { opacity: 1; background-color: #ffffff; }
+  100% { opacity: 0; background-color: transparent; }
+}
+
+.animate-pack-glow {
+  animation: packGlow 0.6s ease-out forwards;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin 2s linear infinite;
+}
+
+/* Neubrutalism Badge */
+.neo-badge {
+  background-color: var(--color-border);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
 }
