@@ -39,7 +39,28 @@ export async function fetchRandomCards(tcgId, count = 5) {
     throw new Error(`No cards found for ${tcgId}`);
   }
 
+  // Bypass hotlink protection for One Piece images using a free image proxy
+  const processedData = result.data.map(card => {
+    const processedCard = { ...card };
+    if (processedCard.images) {
+      const fixUrl = (url) => {
+        if (!url) return url;
+        if (url.includes('en.onepiece-cardgame.com')) {
+          const cleanUrl = url.replace(/^https?:\/\//, '');
+          return `https://wsrv.nl/?url=${encodeURIComponent(cleanUrl)}`;
+        }
+        return url;
+      };
+      processedCard.images = {
+        ...processedCard.images,
+        small: fixUrl(processedCard.images.small),
+        large: fixUrl(processedCard.images.large)
+      };
+    }
+    return processedCard;
+  });
+
   // Shuffle and pick the requested number of cards
-  const shuffled = shuffleCards(result.data);
+  const shuffled = shuffleCards(processedData);
   return shuffled.slice(0, count);
 }
