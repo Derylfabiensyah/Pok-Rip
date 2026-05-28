@@ -1,122 +1,191 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useCallback } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import Home from './components/Home';
+import BoosterPack from './components/BoosterPack';
+import CardReveal from './components/CardReveal';
+import PackResult from './components/PackResult';
+import Collection, { saveToCollection } from './components/Collection';
+import { fetchRandomCards } from './services/pokemonApi';
 
-function App() {
-  const [count, setCount] = useState(0)
+/*
+  App States (screens):
+  - home
+  - loading
+  - pack       (booster pack animation)
+  - reveal     (card-by-card reveal)
+  - result     (all cards summary)
+  - collection (saved cards)
+  - error
+*/
+
+export default function App() {
+  const [screen, setScreen] = useState('home');
+  const [cards, setCards] = useState([]);
+  const [error, setError] = useState('');
+
+  /** Fetch cards from API and transition to pack screen */
+  const startOpenPack = useCallback(async () => {
+    setScreen('loading');
+    setError('');
+
+    try {
+      const fetchedCards = await fetchRandomCards(5);
+      setCards(fetchedCards);
+      setScreen('pack');
+    } catch (err) {
+      console.error('Failed to fetch cards:', err);
+      setError(err.message || 'Failed to fetch cards. Please try again.');
+      setScreen('error');
+    }
+  }, []);
+
+  /** Pack animation done → go to card reveal */
+  const handlePackOpened = useCallback(() => {
+    setScreen('reveal');
+  }, []);
+
+  /** All cards revealed → show results */
+  const handleRevealComplete = useCallback(() => {
+    setScreen('result');
+  }, []);
+
+  /** Save current cards to localStorage collection */
+  const handleSaveToCollection = useCallback(() => {
+    saveToCollection(cards);
+    setScreen('collection');
+  }, [cards]);
+
+  /** Navigation helpers */
+  const goHome = useCallback(() => setScreen('home'), []);
+  const goCollection = useCallback(() => setScreen('collection'), []);
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <AnimatePresence mode="wait">
+      {/* ===== HOME ===== */}
+      {screen === 'home' && (
+        <motion.div
+          key="home"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          Count is {count}
-        </button>
-      </section>
+          <Home onOpenPack={startOpenPack} onViewCollection={goCollection} />
+        </motion.div>
+      )}
 
-      <div className="ticks"></div>
+      {/* ===== LOADING ===== */}
+      {screen === 'loading' && (
+        <motion.div
+          key="loading"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="min-h-screen flex flex-col items-center justify-center gap-6"
+        >
+          {/* Spinner */}
+          <div className="relative w-16 h-16">
+            <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-purple-500 border-r-cyan-400 animate-spin-slow" />
+            <div className="absolute inset-2 rounded-full border-2 border-transparent border-b-yellow-400 border-l-purple-400 animate-spin-slow" style={{ animationDirection: 'reverse', animationDuration: '1s' }} />
+          </div>
+          <p className="text-slate-400 text-lg tracking-wide animate-pulse">Opening pack...</p>
+        </motion.div>
+      )}
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {/* ===== ERROR ===== */}
+      {screen === 'error' && (
+        <motion.div
+          key="error"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="min-h-screen flex flex-col items-center justify-center gap-6 px-4"
+        >
+          <div className="glass rounded-2xl p-8 text-center max-w-md">
+            <div className="text-5xl mb-4">😵</div>
+            <h3 className="text-xl font-bold text-white mb-2">Oops! Something went wrong</h3>
+            <p className="text-slate-400 text-sm mb-6">{error}</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={startOpenPack}
+                className="btn-primary"
+                id="btn-retry"
+              >
+                🔄 Retry
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                onClick={goHome}
+                className="btn-secondary"
+              >
+                🏠 Home
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {/* ===== BOOSTER PACK ===== */}
+      {screen === 'pack' && (
+        <motion.div
+          key="pack"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <BoosterPack onPackOpen={handlePackOpened} />
+        </motion.div>
+      )}
+
+      {/* ===== CARD REVEAL ===== */}
+      {screen === 'reveal' && (
+        <motion.div
+          key="reveal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <CardReveal cards={cards} onComplete={handleRevealComplete} />
+        </motion.div>
+      )}
+
+      {/* ===== PACK RESULT ===== */}
+      {screen === 'result' && (
+        <motion.div
+          key="result"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <PackResult
+            cards={cards}
+            onSave={handleSaveToCollection}
+            onOpenAnother={startOpenPack}
+            onGoHome={goHome}
+          />
+        </motion.div>
+      )}
+
+      {/* ===== COLLECTION ===== */}
+      {screen === 'collection' && (
+        <motion.div
+          key="collection"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <Collection onGoHome={goHome} onOpenPack={startOpenPack} />
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 }
-
-export default App
