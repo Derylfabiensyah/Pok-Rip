@@ -83,18 +83,18 @@ export default function Collection({ onGoHome, onOpenPack }) {
   }, [cards, filterTcg, filterRarity]);
 
   return (
-    <div className="min-h-screen flex flex-col px-4 py-8 relative bg-[var(--color-bg-primary)]">
+    <div className="min-h-screen flex flex-col items-center px-4 py-12 gap-8 relative bg-[var(--color-bg-primary)]">
       
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-8 z-10"
+        className="text-center z-10 flex flex-col items-center gap-4"
       >
-        <h2 className="text-5xl md:text-6xl font-black uppercase mb-4" style={{ textShadow: '3px 3px 0 var(--color-border)' }}>
+        <h2 className="text-5xl md:text-6xl font-black uppercase" style={{ textShadow: '3px 3px 0 var(--color-border)' }}>
           My Collection
         </h2>
-        <div className="inline-block bg-white border-2 border-black px-4 py-1 font-bold">
+        <div className="inline-block bg-white border-2 border-black px-4 py-2 font-bold">
           {cards.length} Total Cards ({displayData.length} Unique)
         </div>
       </motion.div>
@@ -104,7 +104,7 @@ export default function Collection({ onGoHome, onOpenPack }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="flex gap-4 justify-center mb-8 z-10"
+        className="flex gap-4 justify-center z-10"
       >
         <button onClick={onOpenPack} className="btn-primary text-sm px-6 py-3">
           ⚡ Open Pack
@@ -117,7 +117,7 @@ export default function Collection({ onGoHome, onOpenPack }) {
       {/* Filters (Neubrutalism style) */}
       <motion.div 
         initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}
-        className="max-w-7xl mx-auto w-full mb-8 z-10 flex flex-col md:flex-row gap-4"
+        className="max-w-7xl mx-auto w-full z-10 flex flex-col md:flex-row gap-4"
       >
         {/* TCG Filter */}
         <div className="flex-1 neo-card p-3 flex flex-wrap gap-2 items-center">

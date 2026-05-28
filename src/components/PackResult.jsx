@@ -12,13 +12,13 @@ export default function PackResult({ cards, onOpenAnother, onGoHome }) {
   const bestRarity = getCardRarity(bestCard);
 
   return (
-    <div className="min-h-screen flex flex-col items-center py-12 px-4 relative z-10 bg-[var(--color-bg-primary)]">
+    <div className="min-h-screen flex flex-col items-center py-12 px-4 gap-12 relative z-10 bg-[var(--color-bg-primary)]">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-10"
+        className="text-center flex flex-col items-center gap-4"
       >
-        <h2 className="text-4xl md:text-5xl font-black uppercase mb-2" style={{ textShadow: '2px 2px 0 var(--color-border)' }}>
+        <h2 className="text-4xl md:text-5xl font-black uppercase" style={{ textShadow: '2px 2px 0 var(--color-border)' }}>
           Pack Summary
         </h2>
         <p className="text-lg font-bold border-b-2 border-black inline-block pb-1">
@@ -30,7 +30,7 @@ export default function PackResult({ cards, onOpenAnother, onGoHome }) {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.2 }}
-        className="flex flex-wrap justify-center gap-4 md:gap-6 mb-12 max-w-6xl w-full"
+        className="flex flex-wrap justify-center gap-4 md:gap-8 max-w-6xl w-full"
       >
         {cards.map((card, i) => {
           const rarity = getCardRarity(card);
