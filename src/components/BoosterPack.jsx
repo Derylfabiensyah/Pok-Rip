@@ -1,18 +1,16 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-import pokemonBack from '../assets/pokemon.png';
-import onepieceBack from '../assets/onepiece.png';
-import dragonballBack from '../assets/dragonball.webp';
-import digimonBack from '../assets/digimon.png';
-import gundamBack from '../assets/gundam.png';
-import yugiohBack from '../assets/yugioh.jpg';
+import pokemonBack from '../assets/pokemon-back_card.png';
+import onepieceBack from '../assets/onepiece-back_card.png';
+import digimonBack from '../assets/digimon-back_card.png';
+import gundamBack from '../assets/gundam-back_card.png';
+import yugiohBack from '../assets/yugioh-back_card.jpg';
 
 const TCG_DATA = {
   'pokemon': { name: 'Pokémon', image: pokemonBack, color: 'var(--color-pokemon)' },
   'one-piece': { name: 'One Piece', image: onepieceBack, color: 'var(--color-onepiece)' },
   'yugioh': { name: 'Yu-Gi-Oh!', image: yugiohBack, color: 'var(--color-yugioh)' },
-  'dragon-ball-fusion-world': { name: 'Dragon Ball', image: dragonballBack, color: 'var(--color-dragonball)' },
   'digimon': { name: 'Digimon', image: digimonBack, color: 'var(--color-digimon)' },
   'gundam': { name: 'Gundam', image: gundamBack, color: 'var(--color-gundam)' },
 };

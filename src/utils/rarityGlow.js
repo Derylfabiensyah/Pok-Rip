@@ -20,14 +20,18 @@ export function getRarityGlow(rarity) {
     r.includes('ultimate') ||
     r.includes('prismatic') ||
     r.includes('hyper') ||
+    r.includes('rainbow') ||
+    r.includes('gold') ||
+    r.includes('illustration') ||
     r === 'sec' ||
     r === 'sr' || // One Piece Secret Rare
-    r === 'manga'
+    r === 'manga' ||
+    r === 'ace spec'
   ) {
     return { glowClass: 'rarity-ultra-rare', level: 5, label: 'Ultra Rare' };
   }
   
-  // Super Rare / VMAX / VSTAR / GX / EX
+  // Super Rare / VMAX / VSTAR / GX / EX / Full Art
   if (
     r.includes('super') ||
     r.includes('vmax') ||
@@ -36,7 +40,11 @@ export function getRarityGlow(rarity) {
     r.includes('ex') ||
     r.includes('v-union') ||
     r.includes('amazing') ||
-    r === 'sp'
+    r.includes('full art') ||
+    r.includes('trainer gallery') ||
+    r.includes('radiant') ||
+    r === 'sp' ||
+    r === 'double rare'
   ) {
     return { glowClass: 'rarity-rare-holo', level: 4, label: 'Super Rare' };
   }
@@ -44,10 +52,13 @@ export function getRarityGlow(rarity) {
   // Rare Holo / Rare
   if (
     r.includes('holo') || 
+    r.includes('reverse') ||
     r === 'r' || 
     r === 'rare' ||
     r === 'promo' ||
-    r === 'v' // Pokemon V
+    r === 'v' || // Pokemon V
+    r === 'shiny' ||
+    r === 'shiny rare'
   ) {
     return { glowClass: 'rarity-rare', level: 3, label: 'Rare' };
   }
@@ -79,16 +90,16 @@ export function getRarityColor(level) {
 }
 
 /**
- * Helper to determine rarity for cards that don't have a clear rarity field
- * Specifically handles Pokemon subtypes and Digimon levels
+ * Helper to determine rarity for cards
+ * Uses actual rarity data from API first, then falls back to heuristics
  */
 export function getCardRarity(card) {
-  // If explicitly provided
+  // Priority 1: Use explicit rarity field from API
   if (card.rarity) {
     return card.rarity;
   }
   
-  // Pokemon specific logic (sometimes missing rarity field, but has subtypes)
+  // Priority 2: Pokemon specific logic (sometimes missing rarity field, but has subtypes)
   if (card.supertype === 'Pokémon' && card.subtypes) {
     const subs = card.subtypes.map(s => s.toLowerCase());
     if (subs.includes('mega') || subs.includes('vmax') || subs.includes('vstar') || subs.includes('v-union')) return 'Ultra Rare';
@@ -97,12 +108,12 @@ export function getCardRarity(card) {
     if (subs.includes('stage 2')) return 'Rare';
   }
   
-  // Pokemon Energy is always common
+  // Priority 3: Pokemon Energy is always common
   if (card.supertype === 'Energy') {
     return 'Common';
   }
   
-  // Digimon fallback (often missing rarity)
+  // Priority 4: Digimon fallback (often missing rarity)
   if (card.level) {
     const lvl = parseInt(card.level, 10);
     if (lvl >= 6) return 'Secret Rare';
@@ -111,5 +122,13 @@ export function getCardRarity(card) {
     if (lvl === 3) return 'Uncommon';
   }
   
+  // Priority 5: Yu-Gi-Oh! - use type as fallback
+  if (card.type && card.tcgId === 'yugioh') {
+    const type = card.type.toLowerCase();
+    if (type.includes('xyz') || type.includes('synchro') || type.includes('fusion')) return 'Rare';
+    if (type.includes('effect')) return 'Uncommon';
+  }
+  
+  // Default fallback
   return 'Common';
 }

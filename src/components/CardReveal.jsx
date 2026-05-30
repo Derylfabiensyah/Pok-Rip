@@ -30,25 +30,33 @@ export default function CardReveal({ cards, onComplete, tcgId = 'pokemon' }) {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6 z-10"
+        className="mb-8 z-10 flex flex-col items-center"
       >
-        <div className="flex gap-2 items-center">
+        {/* Progress Bar */}
+        <div className="flex gap-3 items-center justify-center mb-4">
           {cards.map((_, i) => (
-            <div
+            <motion.div
               key={i}
-              className={`h-1.5 rounded-full transition-all duration-300 ${
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: i * 0.1 }}
+              className={`h-3 rounded-lg border-2 border-black transition-all duration-300 shadow-[2px_2px_0_#000] ${
                 i === currentIndex
-                  ? 'w-8 bg-gradient-to-r from-purple-500 to-cyan-400'
+                  ? 'w-12 bg-[#ffeb3b]'
                   : i < currentIndex
-                  ? 'w-4 bg-purple-500/40'
-                  : 'w-4 bg-slate-700'
+                  ? 'w-8 bg-[#4caf50]'
+                  : 'w-8 bg-white'
               }`}
             />
           ))}
         </div>
-        <p className="text-center text-slate-500 text-sm mt-3 tracking-wide">
-          Card {currentIndex + 1} of {cards.length}
-        </p>
+        
+        {/* Card Counter Text */}
+        <div className="neo-badge bg-black border-2 border-black px-4 py-2 shadow-[3px_3px_0_#000]">
+          <p className="text-white font-black text-base tracking-tight">
+            CARD <span className="text-[#ff4081]">{currentIndex + 1}</span> / {cards.length}
+          </p>
+        </div>
       </motion.div>
 
       {/* Card Display */}
@@ -62,7 +70,7 @@ export default function CardReveal({ cards, onComplete, tcgId = 'pokemon' }) {
           className="z-10 w-full max-w-sm mx-auto"
           onAnimationComplete={() => setRevealed(true)}
         >
-          <CardFlip card={currentCard} tcgId={tcgId} />
+          <CardFlip card={currentCard} index={currentIndex} tcgId={tcgId} autoFlip={true} />
         </motion.div>
       </AnimatePresence>
 

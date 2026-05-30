@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-import pokemonBack from '../assets/pokemon.png';
-import onepieceBack from '../assets/onepiece.png';
-import dragonballBack from '../assets/dragonball.webp';
-import digimonBack from '../assets/digimon.png';
-import gundamBack from '../assets/gundam.png';
-import yugiohBack from '../assets/yugioh.jpg';
+import pokemonBack from '../assets/pokemon-back_card.png';
+import onepieceBack from '../assets/onepiece-back_card.png';
+import digimonBack from '../assets/digimon-back_card.png';
+import gundamBack from '../assets/gundam-back_card.png';
+import yugiohBack from '../assets/yugioh-back_card.jpg';
 
 const TCG_OPTIONS = [
-  { id: 'pokemon', name: 'Pokémon', image: pokemonBack, color: 'var(--color-pokemon)' },
-  { id: 'one-piece', name: 'One Piece', image: onepieceBack, color: 'var(--color-onepiece)' },
-  { id: 'yugioh', name: 'Yu-Gi-Oh!', image: yugiohBack, color: 'var(--color-yugioh)' },
-  { id: 'dragon-ball-fusion-world', name: 'Dragon Ball', image: dragonballBack, color: 'var(--color-dragonball)' },
-  { id: 'digimon', name: 'Digimon', image: digimonBack, color: 'var(--color-digimon)' },
-  { id: 'gundam', name: 'Gundam', image: gundamBack, color: 'var(--color-gundam)' },
+  { id: 'pokemon', name: 'Pokémon', image: pokemonBack, color: 'var(--color-pokemon)', disabled: false },
+  { id: 'one-piece', name: 'One Piece', image: onepieceBack, color: 'var(--color-onepiece)', disabled: false },
+  { id: 'yugioh', name: 'Yu-Gi-Oh!', image: yugiohBack, color: 'var(--color-yugioh)', disabled: false },
+  { id: 'digimon', name: 'Digimon', image: digimonBack, color: 'var(--color-digimon)', disabled: false },
+  { id: 'gundam', name: 'Gundam', image: gundamBack, color: 'var(--color-gundam)', disabled: false },
 ];
 
 export default function Home({ onOpenPack, onViewCollection }) {
@@ -39,7 +37,7 @@ export default function Home({ onOpenPack, onViewCollection }) {
         className="text-center mb-12"
       >
         <h1 className="text-5xl md:text-7xl font-black mb-4 uppercase tracking-tighter" style={{ textShadow: '4px 4px 0 var(--color-border)' }}>
-          Poké<span className="text-[#ff4081]">Rip</span>
+          Brewek<span className="text-[#ff4081]">.In</span>
         </h1>
         <p className="text-xl md:text-2xl font-bold border-b-4 border-black inline-block pb-1">
           Select Your TCG
